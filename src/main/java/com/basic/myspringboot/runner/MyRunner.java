@@ -2,6 +2,8 @@ package com.basic.myspringboot.runner;
 
 import com.basic.myspringboot.config.CustomerVO;
 import com.basic.myspringboot.property.MyBootProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyRunner implements ApplicationRunner {
     @Value("${myboot.name}")
-    private String name; //@Value 값 대소문자나 엔터 있으면 오류 남 이름 정확해야 함
+    private String name;
 
     @Value("${myboot.age}")
     private int age;
@@ -26,24 +28,27 @@ public class MyRunner implements ApplicationRunner {
     @Autowired
     private CustomerVO customerVO;
 
+    private Logger logger = LoggerFactory.getLogger(MyRunner.class);
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.out.println("${myboot.name} = " + name);
-        System.out.println("${myboot.age} = " + age);
-        System.out.println("${myboot.fullName} = "+environment.getProperty("myboot.fullName"));
+        System.out.println("Logger 구현체 => " + logger.getClass().getName());
 
-        //getProperty는 대소문자 상관 없으나 다른 변수명을 쓰면 null을 가져오지 오류 나지 않음
-        System.out.println("MyBootProperties getName() " + properties.getName());
-        System.out.println("MyBootProperties getAge() " + properties.getAge());
-        System.out.println("MyBootProperties getFullName() " + properties.getFullName());
-        System.out.println("설정된 Port 번호 " + environment.getProperty("local.server.port"));
+        logger.debug("${myboot.name} = {}", name);
+        logger.debug("${myboot.age} = {}", age);
+        logger.debug("${myboot.fullName} = {}", environment.getProperty("myboot.fullName"));
 
-        System.out.println("현재 활성화된 CustomerVO Bean " + customerVO);
+        logger.info("MyBootProperties getName() = {}", properties.getName());
+        logger.info("MyBootProperties getAge() = {}", properties.getAge());
+        logger.info("MyBootProperties getFullName() = {}", properties.getFullName());
+        logger.info("설정된 Port 번호 = {}", environment.getProperty("local.server.port") );
+
+        logger.info("현재 활성화된 CustomerVO Bean = {}", customerVO);
 
         // foo 라는 VM 아규먼트 있는지 확인
-        System.out.println("VM 아규먼트 foo : " + args.containsOption("foo"));
+        logger.debug("VM 아규먼트 foo : {}", args.containsOption("foo"));
         // bar 라는 Program 아규먼트 있는지 확인
-        System.out.println("Program 아규먼트 bar : " + args.containsOption("bar"));
+        logger.debug("Program 아규먼트 bar : {}", args.containsOption("bar"));
 
         /*
             Iterable forEach(Consumer)
