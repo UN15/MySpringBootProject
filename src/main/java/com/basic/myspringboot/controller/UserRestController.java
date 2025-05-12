@@ -8,6 +8,7 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,10 @@ public class UserRestController {
 //        System.out.println(">>>UserController "+userRepository.getClass().getName());
 //        this.userRepository = userRepository;
 //    }
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome this endpoint is not secure";
+    }
 
     @PostMapping
     public User create(@RequestBody User user) {
@@ -31,11 +36,15 @@ public class UserRestController {
     }
 
     @GetMapping
+    //관리자(Admin) 권한이 있는 사용자만 목록조회를 할 수 있음
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
+    //일반 사용자(User)권한이 있는 사용자만 조회를 할 수 있음
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
         Optional<User> optionalUser = userRepository.findById(id);
         //public <U> Optional<U> map(Function<? super T,? extends U> mapper)
