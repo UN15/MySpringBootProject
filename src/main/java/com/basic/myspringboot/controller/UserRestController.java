@@ -5,6 +5,7 @@ import com.basic.myspringboot.exception.BusinessException;
 import com.basic.myspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor //Lombok 어노테이션,  final인 변수 초기화하는 생성자 자동으로 생성하는 역할을 하는 어노테이션
 @RequestMapping("/api/users") // /api/users라는 url이 요청이 오면 controller 작동
+@Profile("test") //prod active라 작동 안 함 api 겹치므로 동작 안 하도록 해야 함
 public class UserRestController {
     private final UserRepository userRepository;
 
